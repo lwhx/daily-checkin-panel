@@ -1,30 +1,19 @@
-# cf-checkin-panel
-# Cloudflare Workers 原生签到面板：Web 管理后台 + D1 存储 + Cron 每日自动签到
 
 name = "daily-checkin-panel"
 main = "src/index.js"
-compatibility_date = "2024-01-01"
 
-# 静态管理后台（public/index.html），API 由 Worker 处理
+compatibility_date = "2026-09-30"
+compatibility_flags = ["nodejs_compat"]
+
 [assets]
 directory = "./public"
 not_found_handling = "single-page-application"
+run_worker_first = ["/api/*"]
 
-# 每分钟触发一次：Worker 内部再按「签到时间设置」（默认 08:00）比对小时+分钟，
-# 到点且该时刻没跑过才真正执行（见 src/schedule.js 的 shouldRun），因此不会重复签到。
-# 频率必须至少到「分钟」，否则面板里的 08:30 这类分钟级时间不会生效。
-# 时间/时区都在面板网页「设置」里改，无需重新部署。
 [triggers]
 crons = ["* * * * *"]
 
 [[d1_databases]]
 binding = "DB"
 database_name = "daily-checkin-panel"
-# 这里要填「你自己」的 D1 数据库 id（一串形如 8-4-4-4-12 的字符）。
-# 怎么拿到：部署前执行下面这条命令，它会把 id 打印出来，复制过来替换这一行即可。
-#
-#   npx wrangler@latest d1 create daily-checkin-panel
-#
-# 懒得手动做也行：直接运行仓库根目录的一键部署脚本 `node deploy.mjs`，
-# 它会自动建库、自动把 id 填到这一行、再自动部署。
-database_id = "REPLACE_ME_WITH_YOUR_OWN_D1_ID"
+database_id = "de60a3da-229a-453e-8e35-951be327d834"
